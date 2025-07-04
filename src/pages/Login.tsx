@@ -124,13 +124,6 @@ const Login = () => {
                 </Link>
               </p>
             </div>
-
-            {/* Demo Login Info */}
-            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-gray-700 font-semibold mb-2">Demo Admin Login:</p>
-              <p className="text-xs text-gray-600">Email: admin@smartpay.com</p>
-              <p className="text-xs text-gray-600">Password: 123456</p>
-            </div>
           </CardContent>
         </Card>
       </div>
