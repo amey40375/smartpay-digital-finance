@@ -66,50 +66,50 @@ const Login = () => {
         {/* Logo */}
         <div className="text-center">
           <div className="flex items-center justify-center mb-4">
-            <div className="bg-white p-3 rounded-full">
-              <Smartphone className="h-8 w-8 text-smartpay-navy" />
+            <div className="bg-white p-3 rounded-full shadow-lg">
+              <Smartphone className="h-8 w-8 text-blue-600" />
             </div>
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">SmartPAY</h1>
-          <p className="text-white/80">Platform Pinjaman Online Terpercaya</p>
+          <p className="text-white/90">Platform Pinjaman Online Terpercaya</p>
         </div>
 
         {/* Login Form */}
         <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl">
           <CardHeader className="text-center pb-4">
-            <CardTitle className="text-2xl text-smartpay-navy">Masuk Akun</CardTitle>
+            <CardTitle className="text-2xl text-gray-800">Masuk Akun</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
                     type="email"
                     placeholder="Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 border-gray-200 focus:border-smartpay-navy"
+                    className="pl-12 h-12 bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-800 placeholder:text-gray-500"
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
                   <Input
                     type="password"
                     placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12 border-gray-200 focus:border-smartpay-navy"
+                    className="pl-12 h-12 bg-white border-2 border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-gray-800 placeholder:text-gray-500"
                   />
                 </div>
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-12 smartpay-gradient text-white font-semibold text-lg rounded-lg hover:opacity-90 transition-opacity"
+                className="w-full h-12 smartpay-gradient text-white font-semibold text-lg rounded-lg hover:opacity-90 transition-opacity shadow-lg"
                 disabled={isLoading}
               >
                 {isLoading ? "Sedang Masuk..." : "MASUK"}
@@ -119,15 +119,15 @@ const Login = () => {
             <div className="mt-6 text-center">
               <p className="text-gray-600">
                 Belum punya akun?{' '}
-                <Link to="/register" className="text-smartpay-navy font-semibold hover:underline">
+                <Link to="/register" className="text-blue-600 font-semibold hover:underline">
                   Daftar Sekarang
                 </Link>
               </p>
             </div>
 
             {/* Demo Login Info */}
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <p className="text-sm text-smartpay-navy font-semibold mb-2">Demo Admin Login:</p>
+            <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
+              <p className="text-sm text-gray-700 font-semibold mb-2">Demo Admin Login:</p>
               <p className="text-xs text-gray-600">Email: admin@smartpay.com</p>
               <p className="text-xs text-gray-600">Password: 123456</p>
             </div>
