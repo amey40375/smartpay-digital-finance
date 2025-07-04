@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from '@/hooks/use-toast';
-import { ArrowLeft, ArrowDownCircle, Building, CreditCard, User, AlertTriangle, CheckCircle, Loader2 } from 'lucide-react';
+import { ArrowLeft, ArrowDownCircle, Building, CreditCard, User, AlertTriangle, CheckCircle, Loader2, X } from 'lucide-react';
 
 const indonesianBanks = [
   "Bank Central Asia (BCA)",
@@ -62,7 +62,7 @@ const Withdraw = () => {
         }
         return prev + 2;
       });
-    }, 1200); // 60 seconds total (100 / 2 = 50 intervals * 1.2s = 60s)
+    }, 1200);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -110,7 +110,7 @@ const Withdraw = () => {
       return;
     }
 
-    // Process withdrawal
+    // Process withdrawal - Send to admin
     const withdrawalData = {
       id: `withdrawal-${Date.now()}`,
       userId: user?.id,
@@ -127,66 +127,74 @@ const Withdraw = () => {
     existingWithdrawals.push(withdrawalData);
     localStorage.setItem('penarikan', JSON.stringify(existingWithdrawals));
 
-    // Update user's loan balance
-    updateUser({
-      loanBalance: (user?.loanBalance || 0) - amount
-    });
-
     setIsProcessing(false);
     setShowSuccessModal(true);
-    
-    setTimeout(() => {
-      setShowSuccessModal(false);
-      navigate('/balance');
-    }, 3000);
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen mobile-container">
       {/* Header */}
-      <div className="smartpay-gradient px-6 py-6 text-white">
-        <div className="flex items-center mb-4">
-          <button onClick={() => navigate('/')} className="mr-4">
+      <div className="smartpay-gradient px-6 py-8 text-white rounded-b-3xl">
+        <div className="flex items-center mb-6">
+          <button onClick={() => navigate('/')} className="mr-4 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors">
             <ArrowLeft className="h-6 w-6" />
           </button>
           <div>
-            <h1 className="text-xl font-bold">Tarik Dana</h1>
-            <p className="text-white/80 text-sm">Transfer dana ke rekening bank Anda</p>
+            <h1 className="text-2xl font-bold mb-1">Tarik Dana</h1>
+            <p className="text-white/90 text-sm">Transfer dana ke rekening bank Anda</p>
           </div>
         </div>
       </div>
 
-      <div className="px-6 py-6">
+      <div className="px-6 py-6 space-y-6">
         {/* Balance Info */}
-        <Card className="mb-6 border-l-4 border-l-smartpay-gold">
-          <CardContent className="p-4">
+        <Card className="elegant-card overflow-hidden">
+          <div className="smartpay-reverse-gradient p-4 text-white">
+            <h3 className="font-semibold text-lg mb-3">Informasi Saldo</h3>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p className="text-xs text-gray-600">Saldo Pinjaman</p>
-                <p className="text-lg font-bold text-smartpay-navy">{formatCurrency(user?.loanBalance || 0)}</p>
+                <p className="text-white/80 text-sm">Saldo Pinjaman</p>
+                <p className="text-xl font-bold">{formatCurrency(user?.loanBalance || 0)}</p>
               </div>
               <div>
-                <p className="text-xs text-gray-600">Status Penarikan</p>
-                <p className={`text-sm font-semibold ${isEligibleForWithdrawal ? 'text-green-600' : 'text-orange-600'}`}>
+                <p className="text-white/80 text-sm">Status Penarikan</p>
+                <p className={`text-sm font-semibold ${isEligibleForWithdrawal ? 'text-green-200' : 'text-orange-200'}`}>
                   {isEligibleForWithdrawal ? '✅ Dapat Ditarik' : '⚠️ Tidak Memenuhi Syarat'}
                 </p>
               </div>
             </div>
-          </CardContent>
+            <div className="mt-4 bg-white/20 rounded-lg p-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm">Persentase Tabungan</span>
+                <span className="font-bold">{savingsPercentage.toFixed(1)}%</span>
+              </div>
+              <div className="w-full bg-white/30 rounded-full h-2">
+                <div
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    savingsPercentage >= 10 ? 'bg-green-400' : 'bg-orange-400'
+                  }`}
+                  style={{ width: `${Math.min(savingsPercentage, 100)}%` }}
+                ></div>
+              </div>
+              <p className="text-xs text-white/80 mt-1">
+                Minimal 10% untuk dapat menarik dana
+              </p>
+            </div>
+          </div>
         </Card>
 
         {/* Withdrawal Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-smartpay-navy flex items-center">
-              <ArrowDownCircle className="h-5 w-5 mr-2" />
+        <Card className="elegant-card">
+          <CardHeader className="pb-4">
+            <CardTitle className="gradient-text flex items-center text-xl">
+              <ArrowDownCircle className="h-6 w-6 mr-3" />
               Formulir Penarikan Dana
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Jumlah Penarikan
                 </label>
                 <div className="relative">
@@ -195,23 +203,23 @@ const Withdraw = () => {
                     placeholder="Masukkan jumlah"
                     value={formData.amount}
                     onChange={(e) => handleInputChange('amount', e.target.value)}
-                    className="pl-12 h-12 text-lg"
+                    className="pl-12 h-14 text-lg border-2 border-blue-100 focus:border-blue-400 rounded-xl"
                     max={user?.loanBalance || 0}
                   />
-                  <span className="absolute left-3 top-3 text-gray-500">Rp</span>
+                  <span className="absolute left-4 top-4 text-gray-500 font-medium">Rp</span>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-2">
                   Maksimal: {formatCurrency(user?.loanBalance || 0)}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Nama Bank
                 </label>
                 <Select onValueChange={(value) => handleInputChange('bankName', value)}>
-                  <SelectTrigger className="h-12">
-                    <Building className="h-4 w-4 text-gray-400 mr-2" />
+                  <SelectTrigger className="h-14 border-2 border-blue-100 focus:border-blue-400 rounded-xl">
+                    <Building className="h-5 w-5 text-gray-400 mr-3" />
                     <SelectValue placeholder="Pilih Bank" />
                   </SelectTrigger>
                   <SelectContent className="bg-white z-50">
@@ -225,11 +233,11 @@ const Withdraw = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Nomor Rekening
                 </label>
                 <div className="relative">
-                  <CreditCard className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <CreditCard className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
                   <Input
                     type="text"
                     placeholder="Nomor rekening"
@@ -238,41 +246,40 @@ const Withdraw = () => {
                       const value = e.target.value.replace(/\D/g, '');
                       handleInputChange('accountNumber', value);
                     }}
-                    className="pl-10 h-12"
+                    className="pl-12 h-14 border-2 border-blue-100 focus:border-blue-400 rounded-xl"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Nama Pemilik Rekening
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <User className="absolute left-4 top-4 h-5 w-5 text-gray-400" />
                   <Input
                     type="text"
                     placeholder="Nama sesuai rekening"
                     value={formData.accountHolderName}
                     onChange={(e) => handleInputChange('accountHolderName', e.target.value)}
-                    className="pl-10 h-12"
+                    className="pl-12 h-14 border-2 border-blue-100 focus:border-blue-400 rounded-xl"
                   />
                 </div>
-                <p className="text-xs text-orange-600 mt-1">
+                <p className="text-xs text-orange-600 mt-2">
                   * Harus sesuai dengan nama pendaftaran: {user?.fullName}
                 </p>
               </div>
 
               <Button
                 type="submit"
-                className="w-full h-12 smartpay-gradient text-white font-semibold text-lg"
-                disabled={!isEligibleForWithdrawal}
+                className="w-full h-14 smartpay-gradient text-white font-semibold text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 TRANSFER SEKARANG
               </Button>
 
               {!isEligibleForWithdrawal && (
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-                  <p className="text-sm text-orange-700">
+                <div className="bg-gradient-to-r from-orange-50 to-red-50 border-l-4 border-orange-400 rounded-lg p-4">
+                  <p className="text-sm text-orange-700 font-medium">
                     Saldo tabungan Anda belum mencukupi syarat minimum 10% untuk melakukan penarikan dana.
                   </p>
                 </div>
@@ -284,53 +291,63 @@ const Withdraw = () => {
 
       {/* Processing Modal */}
       <Dialog open={isProcessing} onOpenChange={() => {}}>
-        <DialogContent className="max-w-sm mx-4 rounded-xl">
+        <DialogContent className="max-w-sm mx-4 rounded-2xl elegant-card">
           <DialogHeader>
-            <DialogTitle className="text-center text-smartpay-navy">
+            <DialogTitle className="text-center gradient-text text-xl">
               Memproses Transfer
             </DialogTitle>
           </DialogHeader>
           <div className="py-8 text-center">
-            <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-smartpay-navy" />
-            <p className="text-lg font-semibold text-smartpay-navy mb-4">
+            <Loader2 className="h-16 w-16 animate-spin mx-auto mb-6 text-blue-500" />
+            <p className="text-lg font-semibold text-gray-700 mb-4">
               Sedang memproses transfer Anda...
             </p>
-            <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+            <div className="w-full bg-gray-200 rounded-full h-4 mb-3">
               <div
-                className="bg-gradient-to-r from-smartpay-navy to-smartpay-gold h-3 rounded-full transition-all duration-300"
+                className="smartpay-gradient h-4 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            <p className="text-sm text-gray-600">{progress}% selesai</p>
+            <p className="text-sm text-gray-600 font-medium">{progress}% selesai</p>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Insufficient Savings Modal */}
+      {/* Insufficient Savings Modal - Updated message */}
       <Dialog open={showInsufficientSavings} onOpenChange={setShowInsufficientSavings}>
-        <DialogContent className="max-w-sm mx-4 rounded-xl">
+        <DialogContent className="max-w-sm mx-4 rounded-2xl elegant-card">
           <DialogHeader>
-            <DialogTitle className="text-center text-orange-600 flex items-center justify-center">
-              <AlertTriangle className="h-6 w-6 mr-2" />
-              Mohon Maaf
-            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-center text-orange-600 flex items-center">
+                <AlertTriangle className="h-6 w-6 mr-2" />
+                Mohon Maaf
+              </DialogTitle>
+              <button 
+                onClick={() => setShowInsufficientSavings(false)}
+                className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <X className="h-5 w-5 text-gray-500" />
+              </button>
+            </div>
           </DialogHeader>
-          <div className="py-4 text-center space-y-4">
-            <p className="text-sm text-gray-700 leading-relaxed">
-              Saldo tabungan Anda saat ini belum mencukupi syarat minimum penarikan dana.
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              Untuk melanjutkan proses penarikan, Anda wajib memiliki tabungan minimal <strong>10%</strong> dari total pinjaman Anda.
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              Hal ini merupakan bagian dari ketentuan aktif sebagai nasabah kami.
-            </p>
-            <p className="text-sm text-gray-700 leading-relaxed">
-              Jangan khawatir, saldo tabungan Anda tidak akan terpotong. Ini hanya sebagai syarat pengaktifan.
-            </p>
-            <div className="bg-blue-50 rounded-lg p-4">
-              <p className="text-sm font-semibold text-smartpay-navy">
-                Yuk, top up tabungan Anda untuk menikmati layanan penuh dari SmartPAY!
+          <div className="py-6 text-center space-y-4">
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-4">
+              <p className="text-sm text-gray-700 leading-relaxed font-medium">
+                Maaf untuk bisa menarik Saldo Pinjaman maka Setidaknya anda Memiliki Saldo Tabungan Minimal 10% Dari Total Pinjaman anda
+              </p>
+            </div>
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4">
+              <p className="text-sm font-semibold gradient-text mb-2">
+                Informasi Saldo Anda:
+              </p>
+              <p className="text-sm text-gray-600">
+                Saldo Tabungan: {formatCurrency(user?.savingsBalance || 0)}
+              </p>
+              <p className="text-sm text-gray-600">
+                Minimal Diperlukan: {formatCurrency((user?.loanBalance || 0) * 0.1)}
+              </p>
+              <p className="text-sm text-red-600 font-medium">
+                Kekurangan: {formatCurrency(Math.max(0, (user?.loanBalance || 0) * 0.1 - (user?.savingsBalance || 0)))}
               </p>
             </div>
             <Button
@@ -338,30 +355,69 @@ const Withdraw = () => {
                 setShowInsufficientSavings(false);
                 navigate('/topup');
               }}
-              className="w-full smartpay-gradient text-white font-semibold"
+              className="w-full smartpay-gradient text-white font-semibold h-12 rounded-xl"
             >
-              TOP UP SEKARANG
+              TOP UP TABUNGAN SEKARANG
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Success Modal */}
+      {/* Success Modal - Updated with invoice */}
       <Dialog open={showSuccessModal} onOpenChange={() => {}}>
-        <DialogContent className="max-w-sm mx-4 rounded-xl">
+        <DialogContent className="max-w-sm mx-4 rounded-2xl elegant-card">
           <DialogHeader>
-            <DialogTitle className="text-center text-green-600">
-              Transfer Berhasil!
+            <DialogTitle className="text-center gradient-text text-xl">
+              Permintaan Berhasil Dikirim!
             </DialogTitle>
           </DialogHeader>
-          <div className="py-8 text-center">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <p className="text-lg font-semibold text-green-600 mb-2">
-              Permintaan Dikirim ke Admin
+          <div className="py-6 text-center space-y-4">
+            <CheckCircle className="h-20 w-20 text-green-500 mx-auto" />
+            
+            {/* Invoice Details */}
+            <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 text-left">
+              <h4 className="font-bold gradient-text mb-3 text-center">Invoice Penarikan</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Nama:</span>
+                  <span className="font-medium">{user?.fullName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Jumlah:</span>
+                  <span className="font-medium">{formatCurrency(parseFloat(formData.amount || '0'))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Bank:</span>
+                  <span className="font-medium">{formData.bankName}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">No. Rekening:</span>
+                  <span className="font-medium">{formData.accountNumber}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Status:</span>
+                  <span className="font-medium text-orange-600">Menunggu Persetujuan Admin</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Tanggal:</span>
+                  <span className="font-medium">{new Date().toLocaleDateString('id-ID')}</span>
+                </div>
+              </div>
+            </div>
+            
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Permintaan penarikan Anda telah dikirim ke admin untuk diproses. Anda akan menerima notifikasi setelah permintaan disetujui.
             </p>
-            <p className="text-sm text-gray-600">
-              Transfer sebesar {formatCurrency(parseFloat(formData.amount || '0'))} akan diproses segera oleh admin.
-            </p>
+            
+            <Button
+              onClick={() => {
+                setShowSuccessModal(false);
+                navigate('/balance');
+              }}
+              className="w-full smartpay-gradient text-white font-semibold h-12 rounded-xl"
+            >
+              LIHAT SALDO
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
