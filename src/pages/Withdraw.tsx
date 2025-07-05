@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -119,13 +118,18 @@ const Withdraw = () => {
       bankName: formData.bankName,
       accountNumber: formData.accountNumber,
       accountHolderName: formData.accountHolderName,
-      status: 'pending',
+      status: 'approved', // Auto approve for demo
       createdAt: new Date().toISOString()
     };
 
     const existingWithdrawals = JSON.parse(localStorage.getItem('penarikan') || '[]');
     existingWithdrawals.push(withdrawalData);
     localStorage.setItem('penarikan', JSON.stringify(existingWithdrawals));
+
+    // IMPORTANT: Update user's loan balance by deducting the withdrawal amount
+    updateUser({
+      loanBalance: Math.max(0, (user?.loanBalance || 0) - amount)
+    });
 
     setIsProcessing(false);
     setShowSuccessModal(true);
@@ -368,45 +372,45 @@ const Withdraw = () => {
         <DialogContent className="max-w-sm mx-4 rounded-2xl elegant-card">
           <DialogHeader>
             <DialogTitle className="text-center gradient-text text-xl">
-              Permintaan Berhasil Dikirim!
+              Penarikan Berhasil!
             </DialogTitle>
           </DialogHeader>
           <div className="py-6 text-center space-y-4">
             <CheckCircle className="h-20 w-20 text-green-500 mx-auto" />
             
-            {/* Invoice Details */}
-            <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 text-left">
-              <h4 className="font-bold gradient-text mb-3 text-center">Invoice Penarikan</h4>
-              <div className="space-y-2 text-sm">
+            {/* Invoice Details - Changed from yellow to light blue */}
+            <div className="bg-gradient-to-r from-sky-100 to-blue-100 rounded-xl p-4 text-left">
+              <h4 className="font-bold text-blue-700 mb-3 text-center">Invoice Penarikan</h4>
+              <div className="space-y-2 text-sm text-black">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Nama:</span>
+                  <span className="text-gray-700">Nama:</span>
                   <span className="font-medium">{user?.fullName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Jumlah:</span>
+                  <span className="text-gray-700">Jumlah:</span>
                   <span className="font-medium">{formatCurrency(parseFloat(formData.amount || '0'))}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Bank:</span>
+                  <span className="text-gray-700">Bank:</span>
                   <span className="font-medium">{formData.bankName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">No. Rekening:</span>
+                  <span className="text-gray-700">No. Rekening:</span>
                   <span className="font-medium">{formData.accountNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Status:</span>
-                  <span className="font-medium text-orange-600">Menunggu Persetujuan Admin</span>
+                  <span className="text-gray-700">Status:</span>
+                  <span className="font-medium text-green-600">Berhasil Diproses</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Tanggal:</span>
+                  <span className="text-gray-700">Tanggal:</span>
                   <span className="font-medium">{new Date().toLocaleDateString('id-ID')}</span>
                 </div>
               </div>
             </div>
             
             <p className="text-sm text-gray-600 leading-relaxed">
-              Permintaan penarikan Anda telah dikirim ke admin untuk diproses. Anda akan menerima notifikasi setelah permintaan disetujui.
+              Penarikan Anda telah berhasil diproses. Saldo pinjaman Anda telah dipotong sesuai nominal yang ditarik.
             </p>
             
             <Button

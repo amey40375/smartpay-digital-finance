@@ -135,14 +135,14 @@ const LoanApplication = () => {
 
       <div className="px-6 py-6">
         {/* Loan Limit Info */}
-        <Card className="mb-6 border-l-4 border-l-smartpay-gold">
+        <Card className="mb-6 border-l-4 border-l-blue-400">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Limit Pinjaman Anda</p>
-                <p className="text-2xl font-bold text-smartpay-navy">{formatCurrency(user?.loanLimit || 0)}</p>
+                <p className="text-2xl font-bold text-blue-600">{formatCurrency(user?.loanLimit || 0)}</p>
               </div>
-              <Calculator className="h-8 w-8 text-smartpay-gold" />
+              <Calculator className="h-8 w-8 text-blue-400" />
             </div>
           </CardContent>
         </Card>
@@ -150,7 +150,7 @@ const LoanApplication = () => {
         {/* Loan Amount Input */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-smartpay-navy flex items-center">
+            <CardTitle className="text-blue-600 flex items-center">
               <FileText className="h-5 w-5 mr-2" />
               Formulir Pinjaman
             </CardTitle>
@@ -175,10 +175,10 @@ const LoanApplication = () => {
               </p>
             </div>
 
-            {/* Loan Preview */}
-            <div className="bg-blue-50 rounded-xl p-4">
-              <h3 className="font-semibold text-smartpay-navy mb-3">Rincian Pinjaman</h3>
-              <div className="space-y-2 text-sm">
+            {/* Loan Preview - Changed from yellow to light blue */}
+            <div className="bg-gradient-to-r from-sky-100 to-blue-100 rounded-xl p-4">
+              <h3 className="font-semibold text-blue-700 mb-3">Rincian Pinjaman</h3>
+              <div className="space-y-2 text-sm text-black">
                 <div className="flex justify-between">
                   <span>Jumlah Pinjaman:</span>
                   <span className="font-semibold">{formatCurrency(loanAmount)}</span>
@@ -189,11 +189,11 @@ const LoanApplication = () => {
                 </div>
                 <div className="flex justify-between border-t pt-2">
                   <span className="font-semibold">Total Pinjaman:</span>
-                  <span className="font-bold text-smartpay-navy">{formatCurrency(totalLoan)}</span>
+                  <span className="font-bold text-blue-700">{formatCurrency(totalLoan)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Angsuran per Bulan:</span>
-                  <span className="font-semibold text-smartpay-gold">{formatCurrency(monthlyInstallment)}</span>
+                  <span className="font-semibold text-blue-600">{formatCurrency(monthlyInstallment)}</span>
                 </div>
               </div>
             </div>
@@ -212,15 +212,15 @@ const LoanApplication = () => {
       <Dialog open={showInvoice} onOpenChange={setShowInvoice}>
         <DialogContent className="max-w-sm mx-4 rounded-xl">
           <DialogHeader>
-            <DialogTitle className="text-center text-smartpay-navy">
+            <DialogTitle className="text-center text-blue-600">
               {isApproved ? "Pinjaman Disetujui!" : isProcessing ? "Memproses..." : "Invoice Pinjaman"}
             </DialogTitle>
           </DialogHeader>
           
           {isProcessing ? (
             <div className="py-8 text-center">
-              <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-smartpay-navy" />
-              <p className="text-lg font-semibold text-smartpay-navy mb-2">
+              <Loader2 className="h-12 w-12 animate-spin mx-auto mb-4 text-blue-600" />
+              <p className="text-lg font-semibold text-blue-600 mb-2">
                 Mohon tunggu, pengajuan sedang diproses...
               </p>
               <div className="loading-bar rounded-full mt-4"></div>
@@ -238,28 +238,29 @@ const LoanApplication = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                <div className="flex justify-between">
+              {/* Changed from yellow background to light blue */}
+              <div className="bg-gradient-to-r from-sky-100 to-blue-100 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between text-black">
                   <span className="text-sm">Jumlah Pinjaman:</span>
                   <span className="font-semibold">{formatCurrency(loanAmount)}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-black">
                   <span className="text-sm">Bunga:</span>
                   <span className="font-semibold">0.3%</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-black">
                   <span className="text-sm">Total Pinjaman:</span>
                   <span className="font-semibold">{formatCurrency(totalLoan)}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-black">
                   <span className="text-sm">Tanggal Pinjaman:</span>
                   <span className="font-semibold">{loanDate}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-black">
                   <span className="text-sm">Angsuran per Bulan:</span>
-                  <span className="font-semibold text-smartpay-gold">{formatCurrency(monthlyInstallment)}</span>
+                  <span className="font-semibold text-blue-600">{formatCurrency(monthlyInstallment)}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between text-black">
                   <span className="text-sm">Nama Peminjam:</span>
                   <span className="font-semibold">{user?.fullName}</span>
                 </div>
@@ -268,9 +269,9 @@ const LoanApplication = () => {
               {/* Installment Table */}
               <div>
                 <h4 className="font-semibold text-sm mb-2">Rincian Angsuran:</h4>
-                <div className="bg-gray-50 rounded-lg p-3 max-h-32 overflow-y-auto">
+                <div className="bg-gradient-to-r from-sky-100 to-blue-100 rounded-lg p-3 max-h-32 overflow-y-auto">
                   {generateInstallmentTable().map((installment) => (
-                    <div key={installment.month} className="flex justify-between text-xs py-1">
+                    <div key={installment.month} className="flex justify-between text-xs py-1 text-black">
                       <span>Bulan {installment.month} ({installment.dueDate})</span>
                       <span>{formatCurrency(installment.amount)}</span>
                     </div>

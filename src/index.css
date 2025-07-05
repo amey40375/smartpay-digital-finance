@@ -63,6 +63,11 @@
     background: linear-gradient(135deg, #10b981 0%, #059669 50%, #3b82f6 100%);
   }
   
+  .smartpay-light-blue {
+    background: linear-gradient(135deg, #87ceeb 0%, #add8e6 100%);
+    color: #000000;
+  }
+  
   .glass-effect {
     backdrop-filter: blur(10px);
     background: rgba(255, 255, 255, 0.1);
@@ -78,14 +83,20 @@
   
   .grid-menu {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
   }
   
   .menu-card {
-    @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105;
+    @apply bg-white rounded-xl p-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:scale-105;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 249, 255, 0.8) 100%);
     border: 1px solid rgba(59, 130, 246, 0.1);
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
   }
   
   .elegant-card {
@@ -111,5 +122,52 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+  }
+
+  .gojek-balance-card {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 16px;
+    padding: 20px;
+    color: white;
+    margin-bottom: 24px;
+  }
+
+  .gojek-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .gojek-menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 8px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    text-decoration: none;
+    color: #374151;
+  }
+
+  .gojek-menu-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .gojek-menu-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+    color: #3b82f6;
+  }
+
+  .gojek-menu-text {
+    font-size: 11px;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
   }
 }
